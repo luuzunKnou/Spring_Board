@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luuzun.dgit.persistence.BoardDAO">
+	
+	<!-- 게시물 등록 -->
+	<insert id="create">
+		INSERT INTO tbl_board (title,content,writer) 
+			VALUES (#{title},#{content},#{writer})
+	</insert>
+	
+	<!-- 게시물 내용 출력 -->
+	<select id="read" resultType="BoardVO">
+		SELECT * FROM tbl_board 
+			WHERE bno=#{bno}
+	</select>
+	
+	<!-- 게시물 전체 출력 -->
+	<!-- 
+	<select id="listAll" resultType="BoardVO">
+		select * from tbl_board
+	</select> 
+	-->
+	
+	<!-- 게시물 수정 -->
+	<update id="update">
+		UPDATE tbl_board
+			SET title=#{title}, content=#{content}, writer=#{writer}
+			WHERE bno=#{bno}
+	</update>
+	
+	<!-- 조회수 처리 -->
+	<update id="updateViewCnt" parameterType="Integer">
+		UPDATE tbl_board
+			SET viewcnt=viewcnt+1 
+			WHERE bno=#{bno}
+	</update>
+	
+	<!-- 게시물 삭제 -->
+	<delete id="delete">
+		DELETE FROM tbl_board 
+			WHERE bno=#{bno}
+	</delete>
+	
+	<!-- 게시물 보기(페이징 처리) -->
+	<select id="listCriteriaPage" resultType="BoardVO">
+		SELECT * FROM tbl_board
+			ORDER BY bno DESC, regdate DESC
+			LIMIT #{pageStart},#{perPageNum}
+	</select>
+	
+	<!-- 전체 게시물의 수 -->
+	<select id="articleCnt" resultType="int">
+		SELECT count(bno) FROM tbl_board
+	</select>
+	
+	<!-- 검색결과 게시물 수 -->
+	<select id="searchCount" resultType="int">
+		SELECT COUNT(bno) FROM tbl_board
+		<include refid="search"/>
+	</select>
+	
+	<!-- 동적 검색 조건 -->
+	<sql id="search">
+		<if test="searchType != null">
+			<if test="searchType == 'title'.toString()">
+				WHERE  title   like concat('%',#{keyword},'%')
+			</if>
+			<if test="searchType == 'content'.toString()">
+				WHERE  content like concat('%',#{keyword},'%')
+			</if>
+			<if test="searchType == 'writer'.toString()">
+				WHERE  writer  like concat('%',#{keyword},'%')
+			</if>
+			<if test="searchType == 'titleOrContent'.toString()">
+				WHERE  title   like concat('%',#{keyword},'%') 
+					or content like concat('%',#{keyword},'%')
+			</if>
+			<if test="searchType == 'contentOrWriter'.toString()">
+				WHERE  content like concat('%',#{keyword},'%') 
+					or writer  like concat('%',#{keyword},'%')
+			</if>
+			<if test="searchType == 'allSearch'.toString()">
+				WHERE  title   like concat('%',#{keyword},'%') 
+					or content like concat('%',#{keyword},'%') 
+					or writer  like concat('%',#{keyword},'%')
+			</if>
+		</if>
+	</sql>
+	
+	<!-- 검색 결과 리스트(페이징) -->
+	<select id="listSearch" resultType="BoardVO">
+		SELECT * FROM tbl_board
+			<include refid="search"/>
+			ORDER BY bno DESC, regdate DESC
+			LIMIT #{pageStart}, #{perPageNum}
+	</select>
+</mapper>

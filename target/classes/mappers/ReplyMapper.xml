@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luuzun.dgit.persistence.ReplyDAO">
+	
+	<!-- bno에 해당하는 댓글 전체 출력 -->
+	<!-- 
+	<select id="list" resultType="ReplyVO">
+	 	SELECT*FROM tbl_reply
+		 	WHERE bno = #{bno}
+		 	ORDER BY rno DESC
+	</select> 
+	-->
+	
+	<!-- 댓글 등록 -->
+	<insert id="create">
+		INSERT INTO tbl_reply (bno,replytext,replyer)
+			VALUES (#{bno},#{replytext},#{replyer})
+	</insert>
+	
+	<!-- 댓글 수정 -->
+	<update id="update">
+		UPDATE tbl_reply SET replytext=#{replytext}, updatedate=NOW()
+			WHERE rno = #{rno}
+	</update>
+	
+	<!-- 댓글 삭제 -->
+	<delete id="delete">
+		DELETE FROM tbl_reply 
+			WHERE rno = #{rno}
+	</delete>
+	
+	<!-- 댓글 페이징 -->
+	<select id="listPage" resultType="ReplyVO">
+		SELECT*FROM tbl_reply 
+			WHERE bno=#{bno}
+			ORDER BY rno DESC
+			LIMIT #{cri.pageStart}, #{cri.perPageNum}
+	</select>
+	
+	<!-- 댓글 수 -->
+	<select id="count" resultType="int">
+		SELECT COUNT(bno) FROM tbl_reply 
+			WHERE bno = #{bno}
+	</select>
+</mapper>
