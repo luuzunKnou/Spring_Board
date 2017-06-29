@@ -47,4 +47,12 @@ public class ReplyController {
 		}
 		return entity;
 	}
+	
+	//댓글 삭제
+	
+	//댓글 수정
+	
+	//댓글 페이징
+	
+	//멤버 한명 검색?
 }
