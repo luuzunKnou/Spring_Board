@@ -35,6 +35,7 @@ public class BoardController {
 	public String registerPOST(BoardVO board) throws Exception{
 		logger.info("Insert : "+ board);
 		boardService.regist(board);
+		//
 		return "board/success";
 	}
 	
